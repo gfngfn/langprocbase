@@ -150,10 +150,10 @@ let rec aux lev tyenv (rng, utastmain) =
 
   | LetRecIn((rngv, x), utast1, utast2) ->
       let tyf = fresh_type (lev + 1) rngv in
-      let ptyf = lift tyf in
-      let tyenv = tyenv |> Typeenv.add x ptyf in
-      let ty1 = aux (lev + 1) tyenv utast1 in
+      let tyenvsub = tyenv |> Typeenv.add x (lift tyf) in
+      let ty1 = aux (lev + 1) tyenvsub utast1 in
       unify ty1 tyf;
+      let tyenv = tyenv |> Typeenv.add x (generalize lev tyf) in
       let ty2 = aux lev tyenv utast2 in
       ty2
 
